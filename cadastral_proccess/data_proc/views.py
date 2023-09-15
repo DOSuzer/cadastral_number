@@ -60,7 +60,10 @@ class HistoryView(views.APIView, MyPaginationClass):
 
     def get(self, request):
         """GET запрос истории."""
+        filter_param = request.GET.get('filter')
         queryset = CadastralData.objects.all()
+        if filter_param:
+            queryset = queryset.filter(cadastral_number=filter_param)
         results = self.paginate_queryset(queryset, request, view=self)
         serializer = HistorySerializer(results, many=True)
         return self.get_paginated_response(serializer.data)
